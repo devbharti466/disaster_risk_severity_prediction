@@ -84,9 +84,9 @@ def run_lstm(df: pd.DataFrame) -> dict:
     print(f"  Monthly series length: {len(values)}")
 
     # Scale only on training data to prevent data leakage
-    split_raw = int((len(values) - SEQ_LEN) * 0.8) + SEQ_LEN
+    train_end_idx = int((len(values) - SEQ_LEN) * 0.8) + SEQ_LEN
     scaler = MinMaxScaler()
-    scaler.fit(values[:split_raw].reshape(-1, 1))
+    scaler.fit(values[:train_end_idx].reshape(-1, 1))
     scaled = scaler.transform(values.reshape(-1, 1)).flatten()
 
     # Sequences
