@@ -7,7 +7,6 @@ Handles data loading, cleaning, missing value imputation, and feature engineerin
 import os
 import numpy as np
 import pandas as pd
-from sklearn.impute import KNNImputer
 
 
 # ──────────────────────────────────────────────

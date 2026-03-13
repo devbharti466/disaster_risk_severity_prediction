@@ -8,7 +8,5 @@ venv/
 dist/
 build/
 .ipynb_checkpoints/
-results/plots/*.png
-results/metrics/*.json
 data/processed/*.csv
 *.pkl
