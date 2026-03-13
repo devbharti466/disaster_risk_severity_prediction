@@ -83,9 +83,11 @@ def run_lstm(df: pd.DataFrame) -> dict:
     values = _build_monthly_series(df)
     print(f"  Monthly series length: {len(values)}")
 
-    # Scale
+    # Scale only on training data to prevent data leakage
+    train_end_idx = int((len(values) - SEQ_LEN) * 0.8) + SEQ_LEN
     scaler = MinMaxScaler()
-    scaled = scaler.fit_transform(values.reshape(-1, 1)).flatten()
+    scaler.fit(values[:train_end_idx].reshape(-1, 1))
+    scaled = scaler.transform(values.reshape(-1, 1)).flatten()
 
     # Sequences
     X, y = _create_sequences(scaled, SEQ_LEN)
@@ -95,13 +97,6 @@ def run_lstm(df: pd.DataFrame) -> dict:
     split = int(len(X) * 0.8)
     X_train, X_test = X[:split], X[split:]
     y_train, y_test = y[:split], y[split:]
-
-    # Scale only on training data (already done on full but we apply same scaler)
-    # In practice the scaler was fit on the full series for simplicity
-    # For strict leakage prevention, fit only on train portion:
-    train_vals = values[: split + SEQ_LEN]
-    scaler_strict = MinMaxScaler()
-    scaler_strict.fit(train_vals.reshape(-1, 1))
 
     # To torch tensors
     device = torch.device("cpu")
